@@ -1,6 +1,4 @@
-import { setDefaultRoles } from './users/default/default-roles';
 import { Module } from '@nestjs/common';
-
 import { ConfigKeys } from './utils/keys/config.keys';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
@@ -21,6 +19,5 @@ export class AppModule {
 
   constructor(private readonly _config: ConfigService){
     AppModule.port = this._config.get(ConfigKeys.PORT_APP);
-    //setDefaultRoles(_config);
   }
 }
