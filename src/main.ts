@@ -8,6 +8,8 @@ async function bootstrap() {
   
   const logger = new Logger('NestApplication');
 
+  app.setGlobalPrefix('api');
+
   initSwagger(app);
 
   app.useGlobalPipes(new ValidationPipe({
