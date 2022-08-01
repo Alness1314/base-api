@@ -29,12 +29,22 @@ export class AuthService {
         if(!bcrypt.compareSync(password, user.password))
             throw new UnauthorizedException('Please check your credentials, password or incorrect email');
 
+        //TODO: return jwt token
         return {
             ...user,
             token: this.generateJwtToken({id: user.id})
         };
 
-        //return jwt token
+        
+    }
+
+
+    async refreshToken(user: User){
+        //TODO: return jwt token
+        return {
+            ...user,
+            token: this.generateJwtToken({id: user.id})
+        };
     }
 
     private generateJwtToken(payload: JwtPayload){

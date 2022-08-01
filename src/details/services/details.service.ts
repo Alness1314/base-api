@@ -1,7 +1,7 @@
 import { Detail } from './../entities/detail.entity';
 import { plainToInstance } from 'class-transformer';
 import { ResponseDetailDto } from './../dto/respose-detail.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateDetailDto } from '../dto/create-detail.dto';
 import { UpdateDetailDto } from '../dto/update-detail.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +9,8 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class DetailsService {
+
+  private readonly logger = new Logger('DetailsService');
 
   constructor(
     @InjectRepository(Detail)
@@ -21,7 +23,7 @@ export class DetailsService {
     try {
       detail = await this._detailRepository.save(newDetail);
     } catch (error) {
-      console.log(error);
+      this.handleDBExceptions(error);
     }
     return plainToInstance(ResponseDetailDto, detail);
   }
@@ -40,10 +42,32 @@ export class DetailsService {
   }
 
   async update(id: string, updateDetailDto: UpdateDetailDto): Promise<ResponseDetailDto> {
-    return;
+    const detail = await this.findOne(id);
+    let updateDetail: Detail;
+    this._detailRepository.merge(detail, updateDetailDto);
+    try {
+      updateDetail = await this._detailRepository.save(detail);
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+    return plainToInstance(ResponseDetailDto, detail);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} detail`;
+  async remove(id: string): Promise<any> {
+    const detail = await this.findOne(id);
+    await this._detailRepository.remove(detail);
+    return {
+      reponse: HttpStatus.ACCEPTED,
+      message: `Deleted details from user with name: ${detail.name} `,
+    }
+  }
+
+  private handleDBExceptions(error: any){
+    this.logger.error(error)
+    if(error.code === 'ER_DUP_ENTRY'){
+      throw new ConflictException('Duplicate entry in database')
+    }
+    console.log(error)
+    throw new InternalServerErrorException('Unexpected error, check server logs');
   }
 }

@@ -7,4 +7,6 @@ export enum ConfigKeys {
     HOST = 'HOST_DB',
     PORT = 'PORT_DB',
     JWT_SECRET = 'JWT_SECRET',
+    DEFAULT_USER_EMAIL = 'DEFAULT_USER_EMAIL',
+    DEFAULT_USER_PASS = 'DEFAULT_USER_PASS',
 }

@@ -1,3 +1,5 @@
+import { setDefaultRoles } from './default/default-roles';
+import { ConfigService } from '@nestjs/config';
 import { AuthModule } from './../auth/auth.module';
 import { DetailsModule } from './../details/details.module';
 import { Role } from './../roles/entities/role.entity';
@@ -13,4 +15,5 @@ import { User } from './entities/user.entity';
   providers: [UsersService],
   exports:[UsersService, TypeOrmModule]
 })
-export class UsersModule {}
+export class UsersModule {
+}

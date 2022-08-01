@@ -1,11 +1,13 @@
+import { Detail } from './../../details/entities/detail.entity';
 import { Role } from './../../roles/entities/role.entity';
 import { User } from './../entities/user.entity';
-import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto, ResponseUserDto, UpdateUserDto } from '../dto';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { DetailsService } from 'src/details/services/details.service';
+import { UpdateDetailDto } from 'src/details/dto/update-detail.dto';
 
 
 @Injectable()
@@ -63,24 +65,31 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const tempUser = await this.findOne(id);
+    //response user updated
     let updateUser: User;
+
+    //search user for update
+    const tempUser = await this.findOne(id);
     const user = plainToInstance(User, tempUser);
     this._userRespository.merge(user, updateUserDto);
-    var list: Role[] = [];
-    console.log(JSON.stringify(user.roles));
-    if(user.roles){
-      list = user.roles;
-    }
+
+    //Role assing to update
+    var list: Role[] = user.roles;
+
     if(updateUserDto.rolesId){
-      for (const iterator of updateUserDto.rolesId) {
-        const temp = await this._roleRespository.findOneBy({id: iterator});
+      for (const roleId of updateUserDto.rolesId) {
+        const temp = await this._roleRespository.findOneBy({id: roleId});
         if(!temp){
           throw new NotFoundException('role not found');
         }
-        console.log(JSON.stringify(temp));
         list.push(temp)
       }
+    }
+
+    //Details update
+    var detail: Detail;
+    if(updateUserDto.detail){
+      detail = await this._detailService.update(user.detail.id, updateUserDto.detail);
     }
     
     try {
@@ -96,10 +105,14 @@ export class UsersService {
     const user = await this.findOne(id);
     const removeUser = plainToInstance(User, user);
     await this._userRespository.remove(removeUser);
+
+    //delete detail 
+    await this._detailService.remove(user.detail.id);
+
     return {
-      ok: true,
-      message: `Deleted the user #${user.email}`
-    };
+      reponse: HttpStatus.ACCEPTED,
+      message: `Deleted user with email: ${user.email} `,
+    }
   }
 
   private handleDBExceptions(error: any){

@@ -2,9 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/
 import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ValidRoles } from 'src/auth/interfaces/validRoles';
+import { ResponseUserDto } from '../dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -13,6 +14,9 @@ export class UsersController {
 
   @Post()
   @Auth( ValidRoles.employee, ValidRoles.admin )
+  @ApiResponse({status: 201, description: 'user was created', type: ResponseUserDto})
+  @ApiResponse({status: 400, description: 'Bad request'})
+  @ApiResponse({status: 500, description: 'Internal server error'})
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }

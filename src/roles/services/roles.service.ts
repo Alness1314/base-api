@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { Role } from './../entities/role.entity';
-import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateRoleDto, ResponseRolDto, UpdateRoleDto } from '../dto';
@@ -31,7 +31,7 @@ export class RolesService {
     return plainToInstance(ResponseRolDto, rolList);
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<ResponseRolDto> {
     const rol = await this._roleRepository.findOneBy({id});
     if(!rol){
       throw new NotFoundException(`Role with id:${id} not found`);
@@ -39,12 +39,13 @@ export class RolesService {
     return plainToInstance(ResponseRolDto, rol);
   }
 
-  update(id: string, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
-  }
-
-  remove(id: string) {
-    return `This action removes a #${id} role`;
+  async remove(id: string): Promise<any> {
+    const role = await this.findOne(id);
+    await this._roleRepository.remove(role);
+    return {
+      reponse: HttpStatus.ACCEPTED,
+      message: `Deleted role with name: ${role.name} `,
+    }
   }
 
   private handleDBExceptions(error: any){
