@@ -13,7 +13,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @Auth( ValidRoles.employee, ValidRoles.admin )
+  //@Auth( ValidRoles.employee, ValidRoles.admin )
   @ApiResponse({status: 201, description: 'user was created', type: ResponseUserDto})
   @ApiResponse({status: 400, description: 'Bad request'})
   @ApiResponse({status: 500, description: 'Internal server error'})
@@ -22,7 +22,7 @@ export class UsersController {
   }
 
   @Get()
-  @Auth()
+  //@Auth()
   findAll() {
     return this.usersService.findAll();
   }
@@ -34,13 +34,13 @@ export class UsersController {
   }
 
   @Put(':id')
-  @Auth( ValidRoles.admin )
+  //@Auth( ValidRoles.admin )
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  @Auth( ValidRoles.admin )
+  //@Auth( ValidRoles.admin )
   async remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }

@@ -13,6 +13,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
   imports:[TypeOrmModule.forFeature([User]),
   PassportModule.register({
     defaultStrategy: 'jwt',
@@ -29,11 +31,9 @@ import { JwtModule } from '@nestjs/jwt';
       }
     },
   }),
-  forwardRef(()=>UsersModule),
-  DetailsModule
+  //forwardRef(()=>UsersModule),
+  //DetailsModule
 ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, UsersService],
-  exports:[JwtStrategy, PassportModule, JwtModule]
+  exports:[JwtStrategy, PassportModule, JwtModule, TypeOrmModule]
 })
 export class AuthModule {}

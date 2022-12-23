@@ -20,6 +20,8 @@ export class UsersService {
     private readonly _userRespository: Repository<User>,
     @InjectRepository(Role)
     private readonly _roleRespository: Repository<Role>,
+    //@InjectRepository(Detail)
+    //private readonly _detailRespository: Repository<Detail>
     private readonly _detailService: DetailsService,
   ){}
 

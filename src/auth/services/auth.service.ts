@@ -32,7 +32,7 @@ export class AuthService {
         //TODO: return jwt token
         return {
             ...user,
-            token: this.generateJwtToken({id: user.id})
+            token: this.generateJwtToken({id: user.id, email: user.email})
         };
 
         
@@ -43,7 +43,7 @@ export class AuthService {
         //TODO: return jwt token
         return {
             ...user,
-            token: this.generateJwtToken({id: user.id})
+            token: this.generateJwtToken({id: user.id, email: user.email})
         };
     }
 

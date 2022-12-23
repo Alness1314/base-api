@@ -13,20 +13,20 @@ export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()
-  @Auth( ValidRoles.admin )
+  //@Auth( ValidRoles.admin )
   @ApiResponse({status: 201, description: 'role was created', type: ResponseRolDto})
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.rolesService.create(createRoleDto);
   }
 
   @Get()
-  @Auth( ValidRoles.employee, ValidRoles.user, ValidRoles.admin )
+  //@Auth( ValidRoles.employee, ValidRoles.user, ValidRoles.admin )
   findAll() {
     return this.rolesService.findAll();
   }
 
   @Delete(':id')
-  @Auth( ValidRoles.admin )
+  //@Auth( ValidRoles.admin )
   remove(@Param('id') id: string) {
     return this.rolesService.remove(id);
   }
