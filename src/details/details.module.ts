@@ -6,7 +6,7 @@ import { DetailsController } from './controllers/details.controller';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Detail])],
+  imports:[TypeOrmModule.forFeature([Detail]), AuthModule],
   controllers: [DetailsController],
   providers: [DetailsService],
   exports: [DetailsService, TypeOrmModule]
